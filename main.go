@@ -166,6 +166,8 @@ func (me *Main) events() {
 				win.Str.FmtBytes(memStats.NextGC)),
 		}
 		win.TaskDialogIndirect(&tdc)
+
+		me.pic.TogglePlayPause()
 	})
 
 	me.wnd.On().WmCommandAccelMenu(int(co.ID_CANCEL), func(_ wm.Command) { // close on ESC
