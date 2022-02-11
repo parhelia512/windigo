@@ -40,12 +40,29 @@ func NewTracker(
 	return me
 }
 
+func (me *Tracker) OnClick(fun func(pct float32)) {
+	me.onClickCB = fun
+}
+
+func (me *Tracker) OnSpace(fun func()) {
+	me.onSpaceCB = fun
+}
+
+func (me *Tracker) OnLeftRight(fun func(key co.VK)) {
+	me.onLeftRightCB = fun
+}
+
+func (me *Tracker) SetElapsed(pct float32) {
+	me.elapsed = pct
+	me.wnd.Hwnd().InvalidateRect(nil, true)
+}
+
 func (me *Tracker) events() {
 	me.wnd.On().WmPaint(func() {
 		hwnd := me.wnd.Hwnd()
 		hasFocus := win.GetFocus() == hwnd
 
-		var ps win.PAINTSTRUCT
+		ps := win.PAINTSTRUCT{}
 		hdc := hwnd.BeginPaint(&ps)
 		defer hwnd.EndPaint(&ps)
 
@@ -100,21 +117,4 @@ func (me *Tracker) events() {
 		}
 		return co.DLGC_NONE
 	})
-}
-
-func (me *Tracker) OnClick(fun func(pct float32)) {
-	me.onClickCB = fun
-}
-
-func (me *Tracker) OnSpace(fun func()) {
-	me.onSpaceCB = fun
-}
-
-func (me *Tracker) OnLeftRight(fun func(key co.VK)) {
-	me.onLeftRightCB = fun
-}
-
-func (me *Tracker) SetElapsed(pct float32) {
-	me.elapsed = pct
-	me.wnd.Hwnd().InvalidateRect(nil, true)
 }

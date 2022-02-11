@@ -15,6 +15,8 @@ import (
 )
 
 func main() {
+	runtime.LockOSThread()
+
 	defer func() {
 		if r := recover(); r != nil {
 			win.HWND(0).MessageBox(
@@ -23,7 +25,6 @@ func main() {
 				"Panic", co.MB_ICONERROR)
 		}
 	}()
-	runtime.LockOSThread()
 
 	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED)
 	defer win.CoUninitialize()
@@ -141,7 +142,7 @@ func (me *Main) events() {
 	me.wnd.On().WmCommandAccelMenu(CMD_ABOUT, func(_ wm.Command) {
 		me.pic.Pause()
 
-		var memStats runtime.MemStats
+		memStats := runtime.MemStats{}
 		runtime.ReadMemStats(&memStats)
 
 		tdc := win.TASKDIALOGCONFIG{

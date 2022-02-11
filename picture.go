@@ -58,48 +58,6 @@ func (me *Picture) Free() {
 	me.graphBuilder.Release()
 }
 
-func (me *Picture) events() {
-	me.wnd.On().WmPaint(func() {
-		var ps win.PAINTSTRUCT
-		me.wnd.Hwnd().BeginPaint(&ps)
-		defer me.wnd.Hwnd().EndPaint(&ps)
-
-		if me.controllerEvr.Ptr() != nil {
-			me.controllerEvr.RepaintVideo()
-		}
-	})
-
-	me.wnd.On().WmSize(func(p wm.Size) {
-		if me.controllerEvr.Ptr() != nil {
-			rc := me.wnd.Hwnd().GetWindowRect()
-			me.wnd.Hwnd().ScreenToClientRc(&rc)
-			me.controllerEvr.SetVideoPosition(nil, &rc)
-		}
-	})
-
-	me.wnd.On().WmLButtonDown(func(_ wm.Mouse) {
-		me.wnd.Hwnd().SetFocus()
-		me.TogglePlayPause()
-	})
-
-	me.wnd.On().WmKeyDown(func(p wm.Key) {
-		if p.VirtualKeyCode() == co.VK_SPACE {
-			me.TogglePlayPause()
-		}
-	})
-
-	me.wnd.On().WmGetDlgCode(func(p wm.GetDlgCode) co.DLGC {
-		if p.VirtualKeyCode() == co.VK_LEFT {
-			me.BackwardSecs(10)
-			return co.DLGC_WANTARROWS
-		} else if p.VirtualKeyCode() == co.VK_RIGHT {
-			me.ForwardSecs(10)
-			return co.DLGC_WANTARROWS
-		}
-		return co.DLGC_NONE
-	})
-}
-
 func (me *Picture) StartPlayback(vidPath string) {
 	me.Free()
 
@@ -207,10 +165,10 @@ func (me *Picture) CurrentPosDurFmt() string {
 		return "NO VIDEO"
 
 	} else {
-		var stCurPos win.SYSTEMTIME
+		stCurPos := win.SYSTEMTIME{}
 		stCurPos.FromDuration(me.mediaSeek.GetCurrentPosition())
 
-		var stDur win.SYSTEMTIME
+		stDur := win.SYSTEMTIME{}
 		stDur.FromDuration(me.mediaSeek.GetDuration())
 
 		return fmt.Sprintf("%d:%02d:%02d of %d:%02d:%02d",
@@ -238,4 +196,46 @@ func (me *Picture) BackwardSecs(secs int) {
 		}
 		me.SetCurrentPos(newSecs)
 	}
+}
+
+func (me *Picture) events() {
+	me.wnd.On().WmPaint(func() {
+		ps := win.PAINTSTRUCT{}
+		me.wnd.Hwnd().BeginPaint(&ps)
+		defer me.wnd.Hwnd().EndPaint(&ps)
+
+		if me.controllerEvr.Ptr() != nil {
+			me.controllerEvr.RepaintVideo()
+		}
+	})
+
+	me.wnd.On().WmSize(func(p wm.Size) {
+		if me.controllerEvr.Ptr() != nil {
+			rc := me.wnd.Hwnd().GetWindowRect()
+			me.wnd.Hwnd().ScreenToClientRc(&rc)
+			me.controllerEvr.SetVideoPosition(nil, &rc)
+		}
+	})
+
+	me.wnd.On().WmLButtonDown(func(_ wm.Mouse) {
+		me.wnd.Hwnd().SetFocus()
+		me.TogglePlayPause()
+	})
+
+	me.wnd.On().WmKeyDown(func(p wm.Key) {
+		if p.VirtualKeyCode() == co.VK_SPACE {
+			me.TogglePlayPause()
+		}
+	})
+
+	me.wnd.On().WmGetDlgCode(func(p wm.GetDlgCode) co.DLGC {
+		if p.VirtualKeyCode() == co.VK_LEFT {
+			me.BackwardSecs(10)
+			return co.DLGC_WANTARROWS
+		} else if p.VirtualKeyCode() == co.VK_RIGHT {
+			me.ForwardSecs(10)
+			return co.DLGC_WANTARROWS
+		}
+		return co.DLGC_NONE
+	})
 }
