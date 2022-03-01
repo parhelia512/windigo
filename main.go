@@ -3,13 +3,13 @@ package main
 import (
 	"fmt"
 	"runtime"
-	"runtime/debug"
-	"time"
 
 	"github.com/rodrigocfd/windigo/ui"
 	"github.com/rodrigocfd/windigo/ui/wm"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/com"
+	"github.com/rodrigocfd/windigo/win/com/com/comco"
 	"github.com/rodrigocfd/windigo/win/com/shell"
 	"github.com/rodrigocfd/windigo/win/com/shell/shellco"
 )
@@ -17,17 +17,17 @@ import (
 func main() {
 	runtime.LockOSThread()
 
-	defer func() {
-		if r := recover(); r != nil {
-			win.HWND(0).MessageBox(
-				fmt.Sprintf("PANIC @ %v\n\n%v\n\n%s",
-					time.Now(), r, string(debug.Stack())),
-				"Panic", co.MB_ICONERROR)
-		}
-	}()
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		win.HWND(0).MessageBox(
+	// 			fmt.Sprintf("PANIC @ %v\n\n%v\n\n%s",
+	// 				time.Now(), r, string(debug.Stack())),
+	// 			"Panic", co.MB_ICONERROR)
+	// 	}
+	// }()
 
-	win.CoInitializeEx(co.COINIT_APARTMENTTHREADED)
-	defer win.CoUninitialize()
+	com.CoInitializeEx(comco.COINIT_APARTMENTTHREADED)
+	defer com.CoUninitialize()
 
 	m := NewMain()
 	m.Run()
@@ -111,9 +111,9 @@ func (me *Main) events() {
 		me.pic.Pause()
 
 		fod := shell.NewIFileOpenDialog(
-			win.CoCreateInstance(
+			com.CoCreateInstance(
 				shellco.CLSID_FileOpenDialog, nil,
-				co.CLSCTX_INPROC_SERVER,
+				comco.CLSCTX_INPROC_SERVER,
 				shellco.IID_IFileOpenDialog),
 		)
 		defer fod.Release()

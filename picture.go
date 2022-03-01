@@ -8,6 +8,8 @@ import (
 	"github.com/rodrigocfd/windigo/ui/wm"
 	"github.com/rodrigocfd/windigo/win"
 	"github.com/rodrigocfd/windigo/win/co"
+	"github.com/rodrigocfd/windigo/win/com/com"
+	"github.com/rodrigocfd/windigo/win/com/com/comco"
 	"github.com/rodrigocfd/windigo/win/com/dshow"
 	"github.com/rodrigocfd/windigo/win/com/dshow/dshowco"
 )
@@ -62,15 +64,15 @@ func (me *Picture) StartPlayback(vidPath string) {
 	me.Free()
 
 	me.graphBuilder = dshow.NewIGraphBuilder(
-		win.CoCreateInstance(
+		com.CoCreateInstance(
 			dshowco.CLSID_FilterGraph, nil,
-			co.CLSCTX_INPROC_SERVER,
+			comco.CLSCTX_INPROC_SERVER,
 			dshowco.IID_IGraphBuilder),
 	)
 	me.vmr = dshow.NewIBaseFilter(
-		win.CoCreateInstance(
+		com.CoCreateInstance(
 			dshowco.CLSID_EnhancedVideoRenderer, nil,
-			co.CLSCTX_INPROC_SERVER,
+			comco.CLSCTX_INPROC_SERVER,
 			dshowco.IID_IBaseFilter),
 	)
 	me.graphBuilder.AddFilter(&me.vmr, "EVR")
