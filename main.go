@@ -17,29 +17,11 @@ import (
 func main() {
 	runtime.LockOSThread()
 
-	// defer func() {
-	// 	if r := recover(); r != nil {
-	// 		win.HWND(0).MessageBox(
-	// 			fmt.Sprintf("PANIC @ %v\n\n%v\n\n%s",
-	// 				time.Now(), r, string(debug.Stack())),
-	// 			"Panic", co.MB_ICONERROR)
-	// 	}
-	// }()
-
 	com.CoInitializeEx(comco.COINIT_APARTMENTTHREADED)
 	defer com.CoUninitialize()
 
 	m := NewMain()
 	m.Run()
-
-	// clsId, _ := win.CLSIDFromProgID("Excel.Application")
-	// root := win.CoCreateInstance(clsId, nil, co.CLSCTX_SERVER, co.IID_IUNKNOWN)
-	// defer root.Release()
-	// excel := autom.NewIDispatch(root.QueryInterface(automco.IID_IDispatch))
-	// defer excel.Release()
-	// for _, f := range excel.ListFunctions() {
-	// 	println(f.Name, f.NumParams, f.FuncKind, f.Flags)
-	// }
 }
 
 const (

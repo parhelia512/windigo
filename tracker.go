@@ -1,8 +1,6 @@
 package main
 
 import (
-	"playback/util"
-
 	"github.com/rodrigocfd/windigo/ui"
 	"github.com/rodrigocfd/windigo/ui/wm"
 	"github.com/rodrigocfd/windigo/win"
@@ -66,10 +64,12 @@ func (me *Tracker) events() {
 		hdc := hwnd.BeginPaint(&ps)
 		defer hwnd.EndPaint(&ps)
 
-		fillColor := win.GetSysColor(
-			util.Iif(hasFocus,
-				co.COLOR_ACTIVECAPTION, co.COLOR_ACTIVEBORDER).(co.COLOR),
-		)
+		var fillColor win.COLORREF
+		if hasFocus {
+			fillColor = win.GetSysColor(co.COLOR_ACTIVECAPTION)
+		} else {
+			fillColor = win.GetSysColor(co.COLOR_ACTIVEBORDER)
+		}
 
 		myPen := win.CreatePen(co.PS_SOLID, 1, fillColor)
 		defer myPen.DeleteObject()
