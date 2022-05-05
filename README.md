@@ -2,6 +2,8 @@
 
 A native Windows video playback application written in pure Go with [Windigo](https://github.com/rodrigocfd/windigo). It uses DirectX with any codecs you have installed – no codecs are shipped.
 
+![Screenshot](screenshot.jpg)
+
 This project demonstrates how to use [COM objects](https://docs.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal) with Windigo, and it's largely experimental, so use with care.
 
 CGo is **not** used.
