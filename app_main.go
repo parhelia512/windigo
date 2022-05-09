@@ -127,14 +127,8 @@ func (me *Main) events() {
 		memStats := runtime.MemStats{}
 		runtime.ReadMemStats(&memStats)
 
-		tdc := win.TASKDIALOGCONFIG{
-			HwndParent:         me.wnd.Hwnd(),
-			DwFlags:            co.TDF_ALLOW_DIALOG_CANCELLATION,
-			DwCommonButtons:    co.TDCBF_OK,
-			PszWindowTitle:     "About",
-			HMainIcon:          win.TdcIconTdi(co.TD_ICON_INFORMATION),
-			PszMainInstruction: "Playback",
-			PszContent: fmt.Sprintf(
+		ui.Prompt.Info(me.wnd, "About", win.StrOptSome("Playback"),
+			fmt.Sprintf(
 				"Windigo experimental playback application.\n\n"+
 					"Objects mem: %s\n"+
 					"Reserved sys: %s\n"+
@@ -145,9 +139,9 @@ func (me *Main) events() {
 				win.Str.FmtBytes(memStats.HeapSys),
 				win.Str.FmtBytes(memStats.HeapIdle),
 				memStats.NumGC,
-				win.Str.FmtBytes(memStats.NextGC)),
-		}
-		win.TaskDialogIndirect(&tdc)
+				win.Str.FmtBytes(memStats.NextGC),
+			),
+		)
 
 		me.pic.TogglePlayPause()
 	})
