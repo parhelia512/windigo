@@ -17,9 +17,6 @@ import (
 func main() {
 	runtime.LockOSThread()
 
-	com.CoInitializeEx(comco.COINIT_APARTMENTTHREADED)
-	defer com.CoUninitialize()
-
 	m := NewMain()
 	m.Run()
 }
@@ -124,10 +121,10 @@ func (me *Main) events() {
 	me.wnd.On().WmCommandAccelMenu(CMD_ABOUT, func(_ wm.Command) {
 		me.pic.Pause()
 
-		memStats := runtime.MemStats{}
+		var memStats runtime.MemStats
 		runtime.ReadMemStats(&memStats)
 
-		ui.Prompt.Info(me.wnd, "About", win.StrOptSome("Playback"),
+		ui.TaskDlg.Info(me.wnd, "About", win.StrOptSome("Playback"),
 			fmt.Sprintf(
 				"Windigo experimental playback application.\n\n"+
 					"Objects mem: %s\n"+
